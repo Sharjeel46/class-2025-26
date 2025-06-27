@@ -1,0 +1,63 @@
+---
+title: "Race and Income"
+---
+
+```{r}
+library(tidyverse)
+
+nyc_tracts <- read_csv(
+  "https://raw.githubusercontent.com/PPBDS/primer.data/master/data-raw/nyc_tracts.csv",
+  show_col_types = FALSE
+)
+
+nyc_tracts <- nyc_tracts |>
+  separate(tract, into = c("tract_full", "county", "state"), sep = "; ", remove = FALSE) |>
+  mutate(
+    county = str_trim(county),
+    borough = recode(county,
+                     "New York County" = "Manhattan",
+                     "Kings County" = "Brooklyn",
+                     "Queens County" = "Queens",
+                     "Bronx County" = "Bronx",
+                     "Richmond County" = "Staten Island")
+  )
+
+
+
+```
+```{r}
+```
+`
+
+```{r}
+names(nyc_tracts)
+```
+
+```{r}
+glimpse(nyc_tracts)
+
+```
+
+
+
+```{r}
+ggplot(nyc_tracts, aes(x = med_income, 
+                       y = largest_group, 
+                       color = med_income)) +
+  geom_point(size = 3, alpha = 0.5) +
+  facet_wrap(~borough, ncol = 1) +
+  scale_color_viridis_c(option = "viridis", direction = 1) +
+  labs(
+    title = "Race and Income Across Census Tracts in New York City",
+    x = "Median household income",
+    y = "Largest group in Census tract"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    strip.text = element_text(size = 14, face = "bold"),
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    panel.grid.major.y = element_line(color = "gray90")
+  )
+
+```
+```
